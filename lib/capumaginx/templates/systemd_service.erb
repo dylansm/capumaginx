@@ -1,0 +1,21 @@
+[Unit]
+Description=: Launch <%= fetch(:application) %>
+After=syslog.target network.target remote-fs.target nss-lookup.target
+
+[Service]
+Type=forking
+WorkingDirectory=/var/www/<%= fetch(:application) %>/current
+User=<%= fetch(:user) %>
+
+Environment=PATH=<%= fetch(:home) %>/.rvm/gems/<%= fetch(:rvm_prefix) %>/bin:<%= fetch(:home) %>/.rvm/gems/<%= "#{fetch(:rvm_ruby_prefix)}@global" %>/bin:<%= fetch(:home) %>/.rvm/rubies/<%= "#{fetch(:rvm_ruby_prefix)} %>/bin:/usr/local/bin:/usr/bin:
+Environment=GEM_HOME=<%= fetch(:home) %>/.rvm/gems/<%= fetch(:rvm_prefix) %>
+Environment=GEM_PATH=<%= fetch(:home) %>/.rvm/gems/<%= fetch(:rvm_prefix) %>:<%= fetch(:home) %>/.rvm/gems/<%= "#{fetch(:rvm_ruby_prefix)}@global" %>
+Environment=MY_RUBY_HOME=<%= fetch(:home) %>/.rvm/rubies/<%= "#{fetch(:rvm_ruby_prefix)} %>
+Environment=IRBRC=<%= fetch(:home) %>/.rvm/rubies/<%= "#{fetch(:rvm_ruby_prefix)} %>/.irbrc
+Environment=RUBY_VERSION=<%= "#{fetch(:rvm_ruby_prefix)} %>
+
+EnvironmentFile=<%= fetch(:home) %>/.app_profiles_systemd
+ExecStart=/bin/bash -c "RAILS_ENV=staging bundle exec puma -C config/puma.rb -e production"
+
+[Install]
+WantedBy=multi-user.target
