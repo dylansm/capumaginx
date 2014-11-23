@@ -1,5 +1,5 @@
 require "capumaginx/version"
-require "capistrano/puma"
+#require "capistrano/puma"
 
 module Capumaginx
   # Your code goes here...
