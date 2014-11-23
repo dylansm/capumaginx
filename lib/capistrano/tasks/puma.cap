@@ -20,4 +20,27 @@ namespace :puma do
       end
     end
   end
+
+  %w[halt stop status].map do |command|
+    desc "#{command} puma"
+    task command do
+      on roles (fetch(:puma_role)) do
+        within current_path do
+          #with rack_env: fetch(:puma_env) do
+            if test "[ -f #{fetch(:puma_pid)} ]"
+              if test "kill -0 $( cat #{fetch(:puma_pid)} )"
+                execute :bundle, 'exec', :pumactl, "-S #{fetch(:puma_state)} #{command}"
+              else
+                # delete invalid pid file , process is not running.
+                execute :rm, fetch(:puma_pid)
+              end
+            else
+              #pid file not found, so puma is probably not running or it using another pidfile
+              warn 'Puma not running'
+            end
+          #end
+        end
+      end
+    end
+  end
 end

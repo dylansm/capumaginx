@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Capumaginx do
+describe Capistrano do
   it 'has a version number' do
-    expect(Capumaginx::VERSION).not_to be nil
+    expect(Capistrano::VERSION).not_to be nil
   end
 
   it 'does something useful' do
